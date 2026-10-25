@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sequential Logic & Circuit Design Master Quiz (40 Questions - Dark Mode)</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- MathJax for rendering LaTeX equations -->
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #334155;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #475569;
+        }
+        .option-card {
+            transition: all 0.15s ease-in-out;
+        }
+        .option-card:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased selection:bg-indigo-600 selection:text-white">
+
+    <!-- Sticky Header -->
+    <header class="bg-slate-900 border-b border-slate-800 text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col sm:flex-row justify-between items-center gap-3">
+            <div class="flex items-center gap-3">
+                <div class="bg-indigo-950 p-2 rounded-lg border border-indigo-700/60">
+                    <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z"></path>
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold leading-tight tracking-tight">Sequential Logic & Circuit Design</h1>
+                    <p class="text-slate-400 text-xs">Lessons 06 & 07 Ultimate 40-Question Assessment</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                <div class="bg-slate-950 border border-slate-800 px-4 py-1.5 rounded-lg text-center">
+                    <span class="block text-[10px] uppercase font-bold tracking-wider text-slate-400">Score</span>
+                    <span id="score-display" class="text-lg font-extrabold text-amber-400">0 / 40</span>
+                </div>
+                <button id="reset-quiz-btn" class="text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold px-3 py-2 rounded-md border border-slate-700 transition-colors">
+                    Reset
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-5xl mx-auto px-4 py-6">
+
+        <!-- Progress Tracker Bar -->
+        <section class="bg-slate-900 border border-slate-800 rounded-xl shadow-sm p-4 mb-6">
+            <div class="flex justify-between text-xs font-semibold text-slate-400 mb-1.5">
+                <span id="progress-text">Question 1 of 40</span>
+                <span id="progress-percent">0% Completed</span>
+            </div>
+            <div class="w-full bg-slate-950 rounded-full h-2.5 overflow-hidden border border-slate-800">
+                <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300" style="width: 0%"></div>
+            </div>
+        </section>
+
+        <!-- Question Container -->
+        <div id="quiz-card-container">
+            <!-- Dynamic Card Rendered Here -->
+        </div>
+
+        <!-- Completion Summary Screen (Hidden by Default) -->
+        <div id="finish-screen" class="hidden bg-slate-900 border border-slate-800 rounded-xl shadow-lg p-8 text-center my-6">
+            <div class="inline-flex p-4 bg-emerald-950 border border-emerald-800/60 text-emerald-400 rounded-full mb-4">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black text-white mb-2">Quiz Completed!</h2>
+            <p class="text-slate-300 text-sm sm:text-base mb-6">You have mastered all 40 questions on Sequential Logic Circuits & Design.</p>
+
+            <div class="bg-slate-950 border border-slate-800 p-6 rounded-xl max-w-sm mx-auto mb-8 shadow-inner">
+                <div id="final-percentage" class="text-4xl font-black text-indigo-400 mb-1">0%</div>
+                <div id="final-score-text" class="text-xs font-bold uppercase tracking-wider text-slate-400">0 out of 40 Correct</div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row justify-center gap-3">
+                <button id="review-btn" onclick="reviewQuestions()" class="px-5 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-700 text-sm transition-colors">
+                    Review Answers
+                </button>
+                <button id="restart-btn" onclick="initQuiz()" class="px-6 py-2.5 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-sm shadow transition-colors">
+                    Retake Quiz
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Quiz Logic & 40-Question Bank -->
+    <script>
+        const quizQuestions = [
+            {
+                qNum: 1,
+                question: "What primary structural feature differentiates a sequential circuit from a combinational circuit?",
+                options: [
+                    { text: "Combinational circuits require feedback paths with memory devices.", correct: false, rationale: "Combinational circuits operate without memory or feedback paths." },
+                    { text: "Sequential circuits include memory elements along feedback paths connecting outputs back to inputs.", correct: true, rationale: "The defining structure of a sequential circuit is memory elements along feedback paths." },
+                    { text: "Sequential circuits cannot use logic gates such as AND, OR, or NOT.", correct: false, rationale: "Sequential circuits rely heavily on logic gates alongside storage devices." },
+                    { text: "Combinational circuits calculate outputs based on past input states.", correct: false, rationale: "Combinational outputs depend strictly on present inputs." }
+                ],
+                hint: "Think about what enables a circuit to remember past states.",
+                tag: "Combinational vs Sequential"
+            },
+            {
+                qNum: 2,
+                question: "In a sequential logic system, what determines the 'Next State' of the storage elements?",
+                options: [
+                    { text: "Only the external inputs at the present instant", correct: false, rationale: "External inputs alone determine output in combinational circuits, not sequential next states." },
+                    { text: "Functions of both the external inputs and the Present State of storage elements", correct: true, rationale: "In sequential logic, Next State = f(Inputs, Present State)." },
+                    { text: "Only the clock signal frequency", correct: false, rationale: "Clock signals control timing/updates, not the next algebraic state logic." },
+                    { text: "The complement of the output signal exclusively", correct: false, rationale: "Output complements are structural outputs, not the deterministic function." }
+                ],
+                hint: "Recall the block diagram inputs to the combinational logic block in a sequential circuit.",
+                tag: "Circuit Behavior"
+            },
+            {
+                qNum: 3,
+                question: "Which statement correctly describes an Asynchronous Sequential Circuit?",
+                options: [
+                    { text: "State changes occur strictly at discrete moments defined by clock pulses.", correct: false, rationale: "This describes a synchronous sequential circuit." },
+                    { text: "It updates its internal state whenever an input signal changes, without waiting for a periodic clock.", correct: true, rationale: "Asynchronous circuits respond directly to input transitions without central clock pulses." },
+                    { text: "It is easier to design than a synchronous sequential circuit.", correct: false, rationale: "Asynchronous design is harder due to race conditions and propagation delay sensitivity." },
+                    { text: "It cannot store memory across time.", correct: false, rationale: "Asynchronous circuits do store memory (e.g., latches)." }
+                ],
+                hint: "Consider how an asynchronous circuit reacts immediately to input updates.",
+                tag: "Asynchronous Circuits"
+            },
+            {
+                qNum: 4,
+                question: "Why are Synchronous Sequential Circuits preferred over Asynchronous circuits in modern digital design?",
+                options: [
+                    { text: "They eliminate the need for memory storage elements.", correct: false, rationale: "Synchronous circuits still require storage elements (flip-flops)." },
+                    { text: "They operate without logic gates.", correct: false, rationale: "Combinational logic gates are essential components of synchronous systems." },
+                    { text: "Clock synchronization makes timing predictable and greatly simplifies design.", correct: true, rationale: "Using a periodic clock signal eliminates race conditions and simplifies layout analysis." },
+                    { text: "They require zero delay times across logic components.", correct: false, rationale: "Physical propagation delay still exists; clock period is set to accommodate it." }
+                ],
+                hint: "Analogy: A central clock acts like someone giving a 'GO' command at specific intervals.",
+                tag: "Synchronous Circuits"
+            },
+            {
+                qNum: 5,
+                question: "What is the primary operational distinction between a Latch and a Flip-Flop?",
+                options: [
+                    { text: "Latches store binary data; flip-flops store analog values.", correct: false, rationale: "Both store binary values (0 or 1)." },
+                    { text: "Latches are level-sensitive memory elements; Flip-Flops are edge-triggered memory elements.", correct: true, rationale: "Latches respond to control signal levels (HIGH/LOW); flip-flops trigger on clock signal transitions (rising/falling edge)." },
+                    { text: "Latches are used in synchronous systems; flip-flops are used exclusively in asynchronous systems.", correct: false, rationale: "Flip-flops are the standard building blocks for synchronous logic." },
+                    { text: "Flip-flops do not require feedback paths.", correct: false, rationale: "Flip-flops are constructed from cross-coupled latch gates with feedback." }
+                ],
+                hint: "Level-sensitive vs Edge-triggered behavior.",
+                tag: "Latches vs Flip-Flops"
+            },
+            {
+                qNum: 6,
+                question: "For a cross-coupled NOR gate active-HIGH $SR$ Latch, what happens when both $S = 1$ and $R = 1$ are applied?",
+                options: [
+                    { text: "Output holds its previous state ($Q_{t+1} = Q_t$).", correct: false, rationale: "Holding state occurs when $S=0$ and $R=0$." },
+                    { text: "Output sets to $Q = 1$ cleanly.", correct: false, rationale: "Setting requires $S=1, R=0$." },
+                    { text: "Both outputs $Q$ and $\\bar{Q}$ are forced to $0$, creating an invalid/undefined condition.", correct: true, rationale: "NOR gate property forces both outputs to 0, breaking $Q = \\bar{Q}'$ and causing illegal states if released simultaneously." },
+                    { text: "Output toggles between 0 and 1 continuously.", correct: false, rationale: "Toggling is characteristic of JK flip-flops." }
+                ],
+                hint: "Consider the NOR truth table when one input on each gate is HIGH.",
+                tag: "SR Latch (NOR)"
+            },
+            {
+                qNum: 7,
+                question: "In an active-LOW cross-coupled NAND $SR$ Latch, what input combination represents the 'Keep/No Change' state?",
+                options: [
+                    { text: "$S = 0, R = 0$", correct: false, rationale: "$S=0, R=0$ in a NAND latch is the invalid/forbidden input." },
+                    { text: "$S = 1, R = 1$", correct: true, rationale: "In a NAND SR latch, inputs are active-LOW ($\\bar{S}, \\bar{R}$). Thus, $1,1$ holds the previous state." },
+                    { text: "$S = 1, R = 0$", correct: false, rationale: "This resets $Q$ to 0 in a NAND latch." },
+                    { text: "$S = 0, R = 1$", correct: false, rationale: "This sets $Q$ to 1 in a NAND latch." }
+                ],
+                hint: "Remember that cross-coupled NAND latches utilize active-LOW logic inputs.",
+                tag: "SR Latch (NAND)"
+            },
+            {
+                qNum: 8,
+                question: "What is the primary role of the Control/Enable ($C$ or $CLK$) input in a Gated $SR$ Latch?",
+                options: [
+                    { text: "It forces the latch to toggle continuously.", correct: false, rationale: "Control inputs enable state changes, not toggle oscillations." },
+                    { text: "It determines when the latch is allowed to respond to inputs $S$ and $R$.", correct: true, rationale: "When Control = 0, state changes are locked. When Control = 1, the inputs update the latch." },
+                    { text: "It inverted output $\\bar{Q}$ back into $Q$.", correct: false, rationale: "Feedback lines perform cross-coupling." },
+                    { text: "It removes propagation delay completely.", correct: false, rationale: "Propagation delay is physical and remains present." }
+                ],
+                hint: "The control input acts like a permission switch.",
+                tag: "Gated Latches"
+            },
+            {
+                qNum: 9,
+                question: "How does a D Latch eliminate the invalid state condition present in an $SR$ Latch?",
+                options: [
+                    { text: "By introducing two separate clock inputs.", correct: false, rationale: "A D latch uses one data input $D$ and one enable/control $C$." },
+                    { text: "By using an inverter to ensure $S$ and $R$ inputs are always complementary ($S=D$ and $R=D'$).", correct: true, rationale: "Because $R = S'$, inputs $S=1, R=1$ or $S=0, R=0$ can never occur simultaneously." },
+                    { text: "By forcing the output to toggle on every cycle.", correct: false, rationale: "D latch stores the value of $D$ directly without toggling." },
+                    { text: "By ignoring all input values when Enable is HIGH.", correct: false, rationale: "When Enable is HIGH, $D$ passes through to $Q$." }
+                ],
+                hint: "Think about how $D$ is tied to $S$ and $R$.",
+                tag: "D Latch"
+            },
+            {
+                qNum: 10,
+                question: "In a Master-Slave D Flip-Flop constructed with two D latches and an inverter, when does the Slave latch output update?",
+                options: [
+                    { text: "While $CLK = 1$ (HIGH level)", correct: false, rationale: "When $CLK=1$, the Master latch is enabled and Slave is disabled." },
+                    { text: "When $CLK$ transitions to $0$ (LOW level)", correct: true, rationale: "Master reads data while $CLK=1$. When $CLK$ goes to $0$, Master isolates input and Slave updates the output." },
+                    { text: "Continuously regardless of $CLK$", correct: false, rationale: "Master-Slave architecture isolates input from output." },
+                    { text: "Only when $D$ changes from $0$ to $1$", correct: false, rationale: "Clock controls when stages open/close, not data transitions alone." }
+                ],
+                hint: "Remember the inverter connected to the clock line of the slave latch.",
+                tag: "Master-Slave D Flip-Flop"
+            },
+            {
+                qNum: 11,
+                question: "What is 'Setup Time' ($t_{su}$) in flip-flop operational timing?",
+                options: [
+                    { text: "The time required for output $Q$ to fall from 90% to 10%.", correct: false, rationale: "This refers to fall time ($t_f$)." },
+                    { text: "The minimum time data ($D$) must remain stable before the triggering clock edge.", correct: true, rationale: "Setup time ensures internal node voltages stabilize before the active clock edge arrives." },
+                    { text: "The minimum time data ($D$) must remain stable after the clock transition.", correct: false, rationale: "This defines hold time ($t_h$)." },
+                    { text: "The clock period required to achieve max frequency.", correct: false, rationale: "Clock period involves setup time + propagation delays + clock skew." }
+                ],
+                hint: "Focus on the time window BEFORE the clock edge.",
+                tag: "Timing Parameters"
+            },
+            {
+                qNum: 12,
+                question: "What is 'Hold Time' ($t_h$) for a gated/edge-triggered flip-flop?",
+                options: [
+                    { text: "The minimum time input data must remain stable AFTER the active clock transition.", correct: true, rationale: "Hold time guarantees that the flip-flop reliably captures data without state loss." },
+                    { text: "The time data takes to travel from input to output pin.", correct: false, rationale: "This is propagation delay." },
+                    { text: "The time data must stabilize before the active clock edge.", correct: false, rationale: "This is setup time." },
+                    { text: "The duration of the active clock pulse width.", correct: false, rationale: "This is clock pulse width." }
+                ],
+                hint: "Focus on the time window AFTER the clock edge.",
+                tag: "Timing Parameters"
+            },
+            {
+                qNum: 13,
+                question: "What is the Characteristic Equation for a D Flip-Flop?",
+                options: [
+                    { text: "$Q(t+1) = D$", correct: true, rationale: "Next state in a D flip-flop directly copies the input value $D$." },
+                    { text: "$Q(t+1) = D \\oplus Q(t)$", correct: false, rationale: "This equation belongs to a T flip-flop." },
+                    { text: "$Q(t+1) = J\\bar{Q} + \\bar{K}Q$", correct: false, rationale: "This is the JK flip-flop characteristic equation." },
+                    { text: "$Q(t+1) = S + R'Q$", correct: false, rationale: "This represents the SR flip-flop equation." }
+                ],
+                hint: "The next state value strictly follows the input.",
+                tag: "Characteristic Equations"
+            },
+            {
+                qNum: 14,
+                question: "What is the Characteristic Equation for a JK Flip-Flop?",
+                options: [
+                    { text: "$Q(t+1) = J Q + K' Q'$", correct: false, rationale: "Incorrect boolean terms." },
+                    { text: "$Q(t+1) = J \\bar{Q} + \\bar{K} Q$", correct: true, rationale: "Derived from JK truth table: Set ($J=1, K=0$), Reset ($J=0, K=1$), Toggle ($J=1, K=1$), Hold ($J=0, K=0$)." },
+                    { text: "$Q(t+1) = J + K$", correct: false, rationale: "Ignores present state $Q$." },
+                    { text: "$Q(t+1) = (J \\oplus K) Q$", correct: false, rationale: "Incorrect expression." }
+                ],
+                hint: "$Q(t+1) = J \\cdot Q' + K' \\cdot Q$.",
+                tag: "Characteristic Equations"
+            },
+            {
+                qNum: 15,
+                question: "What is the Characteristic Equation for a T Flip-Flop?",
+                options: [
+                    { text: "$Q(t+1) = T \\cdot Q$", correct: false, rationale: "When $T=1$, state toggles, not $1 \\cdot Q$." },
+                    { text: "$Q(t+1) = T \\oplus Q(t)$", correct: true, rationale: "XOR function: If $T=0$, $0 \\oplus Q = Q$ (Hold). If $T=1$, $1 \\oplus Q = Q'$ (Toggle)." },
+                    { text: "$Q(t+1) = T' + Q$", correct: false, rationale: "Incorrect formulation." },
+                    { text: "$Q(t+1) = T$", correct: false, rationale: "This would act like a D flip-flop." }
+                ],
+                hint: "Recall that $T$ stands for Toggle and uses XOR logic.",
+                tag: "Characteristic Equations"
+            },
+            {
+                qNum: 16,
+                question: "What are 'Direct Inputs' (such as Preset and Clear) on a flip-flop?",
+                options: [
+                    { text: "Inputs that require active clock edges to execute.", correct: false, rationale: "Direct inputs act asynchronously, overriding the clock." },
+                    { text: "Asynchronous control inputs that force initial state ($Q=1$ or $Q=0$) immediately regardless of clock.", correct: true, rationale: "Direct Preset and Clear have highest priority to force valid initial states upon startup." },
+                    { text: "Data inputs that feed directly into combinational output logic.", correct: false, rationale: "They alter internal flip-flop states directly." },
+                    { text: "Inputs used only during toggle modes.", correct: false, rationale: "They are general initialization lines." }
+                ],
+                hint: "Think about setting up initial states on power-up.",
+                tag: "Direct Inputs"
+            },
+            {
+                qNum: 17,
+                question: "In a sequential circuit analysis, what is a State Equation (Transition Equation)?",
+                options: [
+                    { text: "An algebraic expression specifying the Next State of a flip-flop as a function of Present State and external inputs.", correct: true, rationale: "State equations express $A(t+1)$ in terms of $A(t), B(t)$ and inputs $X, Y$." },
+                    { text: "An equation calculating overall circuit propagation delay.", correct: false, rationale: "Propagation delay is a timing specification, not a state transition equation." },
+                    { text: "A truth table listing total gate counts.", correct: false, rationale: "State equations are boolean algebraic expressions." },
+                    { text: "A equation for output clock frequency.", correct: false, rationale: "State equations define discrete state logic." }
+                ],
+                hint: "Algebraic formula: Next State = f(Present State, Inputs).",
+                tag: "State Equations"
+            },
+            {
+                qNum: 18,
+                question: "A clocked sequential circuit has $m = 3$ flip-flops and $n = 2$ external inputs. How many rows will its complete State Table contain?",
+                options: [
+                    { text: "8 rows", correct: false, rationale: "8 rows equals $2^3$, omitting the 2 input lines." },
+                    { text: "16 rows", correct: false, rationale: "16 rows is $2^4$." },
+                    { text: "32 rows", correct: true, rationale: "Formula for state table rows is $2^{m+n} = 2^{3+2} = 2^5 = 32$ rows." },
+                    { text: "64 rows", correct: false, rationale: "64 rows equals $2^6$." }
+                ],
+                hint: "Use formula $2^{m+n}$ where $m$ is flip-flops count and $n$ is inputs count.",
+                tag: "State Tables"
+            },
+            {
+                qNum: 19,
+                question: "In a State Diagram for a sequential circuit, what do the circles and directed arrows represent?",
+                options: [
+                    { text: "Circles represent inputs; arrows represent flip-flop gates.", correct: false, rationale: "Circles represent states; arrows represent transitions." },
+                    { text: "Circles represent States; arrows represent State Transitions labeled with Input/Output values.", correct: true, rationale: "Standard state diagram convention: Nodes = States, Directed Edges = Transitions." },
+                    { text: "Circles represent clock signals; arrows represent ground lines.", correct: false, rationale: "Incorrect." },
+                    { text: "Circles represent logical AND operations; arrows represent OR operations.", correct: false, rationale: "This describes logic circuit schematics or data flow graphs." }
+                ],
+                hint: "Nodes vs Directed Edges in state machines.",
+                tag: "State Diagrams"
+            },
+            {
+                qNum: 20,
+                question: "What is an Excitation Table used for in sequential circuit design?",
+                options: [
+                    { text: "Listing output gate delays under temperature variations.", correct: false, rationale: "Excitation tables list flip-flop input logic values needed for desired state transitions." },
+                    { text: "Determining necessary flip-flop input signal values required to cause a specific state transition from $Q(t) \\rightarrow Q(t+1)$.", correct: true, rationale: "Excitation tables reverse lookup inputs given present state $Q(t)$ and target next state $Q(t+1)$." },
+                    { text: "Counting maximum clock frequency achievable.", correct: false, rationale: "Excitation tables deal with boolean transition requirements." },
+                    { text: "Converting analog signals to digital representations.", correct: false, rationale: "This is ADC operation." }
+                ],
+                hint: "Given Present State and desired Next State, what inputs must be applied?",
+                tag: "Excitation Tables"
+            },
+            {
+                qNum: 21,
+                question: "To cause a state transition from Present State $Q(t) = 0$ to Next State $Q(t+1) = 1$ in a JK Flip-Flop, what are the required excitation inputs?",
+                options: [
+                    { text: "$J = 0, K = X$", correct: false, rationale: "$0, X$ causes $0 \\rightarrow 0$ transition." },
+                    { text: "$J = 1, K = X$", correct: true, rationale: "To transition $0 \\rightarrow 1$: $J=1, K=0$ (Set) or $J=1, K=1$ (Toggle). Thus $J$ must be $1$, and $K$ can be $0$ or $1$ ($X$)." },
+                    { text: "$J = X, K = 0$", correct: false, rationale: "This corresponds to $1 \\rightarrow 1$ transition." },
+                    { text: "$J = X, K = 1$", correct: false, rationale: "This corresponds to $1 \\rightarrow 0$ transition." }
+                ],
+                hint: "Check JK Excitation for $0 \\rightarrow 1$: $J$ must force Set/Toggle, $K$ is Don't Care.",
+                tag: "Excitation Tables"
+            },
+            {
+                qNum: 22,
+                question: "To maintain state $Q(t) = 1 \\rightarrow Q(t+1) = 1$ in a JK Flip-Flop, what excitation inputs are needed?",
+                options: [
+                    { text: "$J = X, K = 0$", correct: true, rationale: "$J=0, K=0$ (Hold) or $J=1, K=0$ (Set). Thus $K$ must be $0$, while $J$ can be $0$ or $1$ ($X$)." },
+                    { text: "$J = 0, K = X$", correct: false, rationale: "This maintains $0 \\rightarrow 0$." },
+                    { text: "$J = 1, K = 1$", correct: false, rationale: "This toggles state $1 \\rightarrow 0$." },
+                    { text: "$J = X, K = 1$", correct: false, rationale: "This forces $1 \\rightarrow 0$." }
+                ],
+                hint: "$K$ must prevent resetting (must be 0), $J$ is don't care.",
+                tag: "Excitation Tables"
+            },
+            {
+                qNum: 23,
+                question: "What excitation value $D$ is required for a D Flip-Flop to execute state transition $Q(t) = 1 \\rightarrow Q(t+1) = 0$?",
+                options: [
+                    { text: "$D = 1$", correct: false, rationale: "$D=1$ would force next state $Q(t+1)=1$." },
+                    { text: "$D = 0$", correct: true, rationale: "In a D flip-flop, $Q(t+1) = D$. Therefore, to make $Q(t+1) = 0$, set $D = 0$." },
+                    { text: "$D = X$ (Don't Care)", correct: false, rationale: "D flip-flops have no don't care excitation values for valid transitions." },
+                    { text: "$D = Q(t)$", correct: false, rationale: "This would keep $Q(t+1) = 1$." }
+                ],
+                hint: "Recall $Q(t+1) = D$.",
+                tag: "Excitation Tables"
+            },
+            {
+                qNum: 24,
+                question: "Which flip-flop type is most suitable for constructing binary counter circuits with minimal external gate logic?",
+                options: [
+                    { text: "SR Flip-Flop", correct: false, rationale: "SR flip-flops require extra gates to avoid illegal states." },
+                    { text: "D Flip-Flop", correct: false, rationale: "D flip-flops require external XOR logic per bit stage." },
+                    { text: "T Flip-Flop", correct: true, rationale: "T flip-flops toggle outputs natively ($T=1$), significantly simplifying counter excitation logic." },
+                    { text: "Level-sensitive D Latch", correct: false, rationale: "Latches cannot easily form synchronous counters due to race conditions." }
+                ],
+                hint: "Counting involves repeating toggling operations.",
+                tag: "Flip-Flop Selection"
+            },
+            {
+                qNum: 25,
+                question: "Given state equation $A(t+1) = A'X + BX'$ and present state $A = 1, B = 0$ with input $X = 0$, what is next state $A(t+1)$?",
+                options: [
+                    { text: "$A(t+1) = 0$", correct: true, rationale: "Substitute: $A'X + BX' = (1')(0) + (0)(0') = (0)(0) + (0)(1) = 0 + 0 = 0$." },
+                    { text: "$A(t+1) = 1$", correct: false, rationale: "Re-evaluate boolean evaluation: both product terms equal 0." },
+                    { text: "$A(t+1) = X$", correct: false, rationale: "Value evaluates to explicit binary constant 0." },
+                    { text: "Undefined", correct: false, rationale: "Equation is fully deterministic." }
+                ],
+                hint: "Substitute $A=1, B=0, X=0$ into $A'X + BX'$.",
+                tag: "State Analysis"
+            },
+            {
+                qNum: 26,
+                question: "What produces 'Don't-Care conditions' ($X$) in sequential circuit design simplification?",
+                options: [
+                    { text: "Unused states when total states are fewer than $2^m$, or internal JK/SR excitation flexibility.", correct: true, rationale: "Unused binary state codes and excitation options (like $J=1, K=X$) provide $X$ terms for K-map minimization." },
+                    { text: "Using D flip-flops instead of JK flip-flops exclusively.", correct: false, rationale: "D flip-flops do not yield excitation don't-care conditions." },
+                    { text: "Clock frequency mismatches.", correct: false, rationale: "Timing mismatches cause faults, not logic don't-cares." },
+                    { text: "Exclusively in combinational decoders.", correct: false, rationale: "Don't-cares occur in both combinational and sequential designs." }
+                ],
+                hint: "Unused states ($2^m - \\text{used states}$) create don't-cares.",
+                tag: "Logic Simplification"
+            },
+            {
+                qNum: 27,
+                question: "To design a sequence detector for bit pattern '00110' using a Mealy State Machine model, what is the minimum number of states required?",
+                options: [
+                    { text: "4 states", correct: false, rationale: "4 states cannot track a 5-bit history chain." },
+                    { text: "5 states", correct: true, rationale: "A Mealy machine requires $N$ states to detect an $N$-bit sequence ($S_0$: Reset, $S_1$: '0', $S_2$: '00', $S_3$: '001', $S_4$: '0011'). Output is generated on the 5th transition." },
+                    { text: "6 states", correct: false, rationale: "6 states are typically required for a Moore Machine where output depends solely on state." },
+                    { text: "10 states", correct: false, rationale: "10 states is unreduced." }
+                ],
+                hint: "For Mealy machines detecting $N$ bits, minimum states $= N$."
+                ,
+                tag: "Sequence Detection"
+            },
+            {
+                qNum: 28,
+                question: "In an overlapping sequence detector for pattern '00110', how does the state machine handle the end of a detected sequence when processing subsequent bits?",
+                options: [
+                    { text: "It immediately resets to the initial state $S_0$ regardless of incoming bits.", correct: false, rationale: "That describes non-overlapping sequence detection." },
+                    { text: "It can re-use previously matched suffix bits (like trailing '0') as the prefix for a new sequence match.", correct: true, rationale: "Overlapping detection allows bit reuse (e.g., the final '0' in '00110' can serve as the first '0' of the next '00110')." },
+                    { text: "It clears all flip-flops asynchronously.", correct: false, rationale: "Sequence processing remains clock synchronous." },
+                    { text: "It locks the output HIGH permanently.", correct: false, rationale: "Outputs pulse HIGH for 1 clock cycle upon pattern match." }
+                ],
+                hint: "Overlapping allows trailing bits of one match to start the next match.",
+                tag: "Sequence Detection"
+            },
+            {
+                qNum: 29,
+                question: "What is the primary difference between Mealy and Moore Finite State Machine (FSM) output definitions?",
+                options: [
+                    { text: "Mealy machine outputs depend on Present State AND current Inputs; Moore machine outputs depend ONLY on Present State.", correct: true, rationale: "Mealy: $Out = f(State, Inputs)$. Moore: $Out = f(State)$." },
+                    { text: "Moore machines do not use flip-flops.", correct: false, rationale: "Both FSM types require flip-flops for state memory." },
+                    { text: "Mealy machines are always asynchronous.", correct: false, rationale: "Both Mealy and Moore machines are commonly clocked synchronously." },
+                    { text: "Moore machine state diagrams cannot contain directed arrows.", correct: false, rationale: "Both use state transition arrows." }
+                ],
+                hint: "Mealy outputs depend on current inputs; Moore outputs depend on state alone.",
+                tag: "FSM Architecture"
+            },
+            {
+                qNum: 30,
+                question: "Given a state table with present state $A, B$, when using D flip-flops for design, how are the flip-flop input equations ($D_A, D_B$) derived?",
+                options: [
+                    { text: "Directly from the Next State columns $A(t+1)$ and $B(t+1)$ in the state table.", correct: true, rationale: "Because $D_A = A(t+1)$ and $D_B = B(t+1)$, input logic maps directly to Next State truth values." },
+                    { text: "By complementing the present state variables $A' B'$.", correct: false, rationale: "D inputs follow next state values directly." },
+                    { text: "By using NOR gate cross-coupling equations.", correct: false, rationale: "D flip-flop input derivation maps Karnaugh maps directly from Next State columns." },
+                    { text: "By setting $D_A = 1$ and $D_B = 0$ permanently.", correct: false, rationale: "Equations must be derived per state transition." }
+                ],
+                hint: "Remember the characteristic equation $Q(t+1) = D$.",
+                tag: "Sequential Design"
+            },
+            {
+                qNum: 31,
+                question: "What is the main purpose of adding a Master stage in a Master-Slave Flip-Flop architecture?",
+                options: [
+                    { text: "To double the output clock frequency", correct: false, rationale: "Master-slave configurations do not multiply clock frequency." },
+                    { text: "To sample and hold input data safely while isolated from output changes during the same clock phase", correct: true, rationale: "It prevents transparency issues (race-through) where input changes ripple directly to the output during a single clock pulse." },
+                    { text: "To eliminate the need for power supply decoupling capacitors", correct: false, rationale: "Power supply decoupling is independent of logic topology." },
+                    { text: "To convert synchronous designs into asynchronous ones", correct: false, rationale: "Master-slave flip-flops are strictly synchronous components." }
+                ],
+                hint: "Preventing transparency and race conditions during clock pulses.",
+                tag: "Master-Slave Design"
+            },
+            {
+                qNum: 32,
+                question: "In an Edge-Triggered D Flip-Flop utilizing three interconnected latches, what specific event governs the data transfer to the output?",
+                options: [
+                    { text: "The static HIGH or LOW voltage level of the clock signal", correct: false, rationale: "Level sensitivity is for latches, not edge-triggered flip-flops." },
+                    { text: "The precise transition edge (rising or falling) of the clock signal", correct: true, rationale: "Edge-triggered architecture captures data exclusively during the clock transition edge." },
+                    { text: "An asynchronous manual reset button press", correct: false, rationale: "Manual buttons override normal clock operations." },
+                    { text: "The moment the D input changes state", correct: false, rationale: "Input changes are ignored unless synchronized with the clock edge." }
+                ],
+                hint: "Edge vs Level triggering mechanism.",
+                tag: "Edge-Triggered Design"
+            },
+            {
+                qNum: 33,
+                question: "How many states does an up/down mod-6 counter possess?",
+                options: [
+                    { text: "4 states", correct: false, rationale: "Mod-4 has 4 states." },
+                    { text: "6 states", correct: true, rationale: "A mod-6 counter sequences through 6 distinct binary states before repeating." },
+                    { text: "8 states", correct: false, rationale: "Mod-8 has 8 states ($2^3$)." },
+                    { text: "16 states", correct: false, rationale: "Mod-16 has 16 states ($2^4$)." }
+                ],
+                init: "Look at the modulo number (mod-6).",
+                tag: "Counters"
+            },
+            {
+                qNum: 34,
+                question: "What does an input combination of $XY = 11$ typically command in an up/down mod-6 counter with inputs $X$ and $Y$?",
+                options: [
+                    { text: "Do nothing (hold state)", correct: false, rationale: "Mod-6 do-nothing state corresponds to $XY = 00$." },
+                    { text: "Count up by 1", correct: false, rationale: "Count up corresponds to $XY = 01$." },
+                    { text: "Reset state to 0", correct: true, rationale: "Per design specification, $XY = 11$ commands an immediate counter reset to state 0." },
+                    { text: "Count down by 1", correct: false, rationale: "Count down corresponds to $XY = 10$." }
+                ],
+                hint: "Check the mod-6 control specification for $XY = 11$.",
+                tag: "Counter Control"
+            },
+            {
+                qNum: 35,
+                question: "Why is the JK Flip-Flop considered the most versatile among the four major flip-flop types?",
+                options: [
+                    { text: "It requires the fewest transistors to manufacture.", correct: false, rationale: "D flip-flops usually require fewer gates." },
+                    { id: 2, text: "It can be easily converted into SR, D, or T flip-flop behavior through external wiring.", correct: true, rationale: "By tying inputs together or using simple logic gates, a JK flip-flop easily emulates all other flip-flop types." },
+                    { text: "It operates without any clock signal requirement.", correct: false, rationale: "JK flip-flops are clocked synchronous devices." },
+                    { text: "It eliminates setup and hold time restrictions entirely.", correct: false, rationale: "All semiconductor memory elements have setup and hold time constraints." }
+                ],
+                hint: "Think about how easily it adapts into other configurations.",
+                tag: "Flip-Flop Versatility"
+            },
+            {
+                qNum: 36,
+                question: "What is the primary function of Flip-Flop Input Equations during sequential circuit implementation?",
+                options: [
+                    { text: "They calculate power dissipation in milliWatts.", correct: false, rationale: "Power calculation requires electrical analysis." },
+                    { text: "They specify the boolean expressions for the logic connected directly to each flip-flop's data inputs.", correct: true, rationale: "Flip-flop input equations dictate how combinational gates drive inputs like $J, K, D,$ or $T$." },
+                    { text: "They define external pinout physical dimensions.", correct: false, rationale: "Pinout dimensions relate to IC package layout." },
+                    { text: "They replace state tables entirely.", correct: false, rationale: "State tables are stepping stones to deriving input equations." }
+                ],
+                hint: "Equations for signals connected to flip-flop input pins.",
+                tag: "Input Equations"
+            },
+            {
+                qNum: 37,
+                question: "In sequential circuit design, what step follows immediately after constructing the Excitation Table?",
+                    options: [
+                    { text: "Deriving simplified combinational logic equations (using K-maps) for the flip-flop inputs and circuit outputs", correct: true, rationale: "Once excitation and output tables are set, K-maps simplify expressions into gate-level equations." },
+                    { text: "Soldering components onto a printed circuit board", correct: false, rationale: "Physical assembly occurs long after logical design." },
+                    { text: "Writing assembly software drivers", correct: false, rationale: "Hardware design precedes firmware/software development." },
+                    { text: "Measuring ambient room temperature", correct: false, rationale: "Unrelated." }
+                ],
+                hint: "Simplifying design using K-maps.",
+                tag: "Circuit Design Steps"
+            },
+            {
+                qNum: 38,
+                question: "When analyzing a sequential circuit, how is the number of rows in a State Table calculated for $m$ flip-flops and $n$ primary inputs?",
+                options: [
+                    { text: "$m + n$", correct: false, rationale: "Linear addition is incorrect." },
+                    { text: "$m \\times n$", correct: false, rationale: "Multiplication does not account for binary combinations." },
+                    { text: "$2^{m+n}$", correct: true, rationale: "Total binary combinations of $m$ state variables and $n$ inputs equal $2^{m+n}$ rows." },
+                    { text: "$2^m \\times 2^n$", correct: true, rationale: "Mathematically equivalent to $2^{m+n}$." }
+                ],
+                hint: "Exponential combinations of state bits plus input bits.",
+                tag: "State Table Math"
+            },
+            {
+                qNum: 39,
+                question: "What happens to a sequential circuit's output in a Moore machine if an external input changes while the state remains constant?",
+                options: [
+                    { text: "The output changes immediately to reflect the new input.", correct: false, rationale: "That occurs in Mealy machines, not Moore machines." },
+                    { text: "The output remains unchanged because Moore outputs depend solely on the present state.", correct: true, rationale: "Moore machine outputs are strictly encoded by current state values, ignoring instantaneous input fluctuations." },
+                    { text: "The circuit locks up into an invalid state.", correct: false, rationale: "Moore machines handle input changes safely without locking." },
+                    { text: "The clock signal frequency cuts in half.", correct: false, rationale: "Clock frequency is independent of FSM output logic." }
+                ],
+                hint: "Moore outputs depend exclusively on state, not inputs.",
+                tag: "Moore Machines"
+            },
+            {
+                qNum: 40,
+                question: "Which of the following best summarizes the complete workflow of clocked sequential circuit design?",
+                options: [
+                    { text: "State Diagram/Table $\\rightarrow$ Excitation Table $\\rightarrow$ K-Map Minimization $\\rightarrow$ Logic Diagram", correct: true, rationale: "This is the standard engineering methodology for designing synchronous sequential circuits." },
+                    { text: "Truth Table $\\rightarrow$ Multiplexer $\\rightarrow$ Power Supply", correct: false, rationale: "Incomplete combinational-only flow." },
+                    { text: "Latch $\\rightarrow$ Asynchronous Hazard $\\rightarrow$ Output", correct: false, rationale: "This describes hazard analysis, not full design workflow." },
+                    { text: "Clock Pulse $\\rightarrow$ Reset $\\rightarrow$ Discard", correct: false, rationale: "Invalid sequence." }
+                ],
+                hint: "From specifications/state diagrams down to final schematic gates.",
+                tag: "Design Workflow"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let userAnswers = new Array(quizQuestions.length).fill(null);
+        let hintVisible = false;
+
+        // DOM Elements
+        const quizCardContainer = document.getElementById('quiz-card-container');
+        const scoreDisplay = document.getElementById('score-display');
+        const progressText = document.getElementById('progress-text');
+        const progressPercent = document.getElementById('progress-percent');
+        const progressBar = document.getElementById('progress-bar');
+        const finishScreen = document.getElementById('finish-screen');
+        const finalPercentage = document.getElementById('final-percentage');
+        const finalScoreText = document.getElementById('final-score-text');
+        const resetQuizBtn = document.getElementById('reset-quiz-btn');
+
+        function initQuiz() {
+            currentQuestionIndex = 0;
+            score = 0;
+            userAnswers.fill(null);
+            hintVisible = false;
+
+            finishScreen.classList.add('hidden');
+            quizCardContainer.classList.remove('hidden');
+
+            updateHeader();
+            renderQuestion();
+        }
+
+        function updateHeader() {
+            scoreDisplay.textContent = `${score} / ${quizQuestions.length}`;
+            const total = quizQuestions.length;
+            const current = currentQuestionIndex + 1;
+            const percentage = Math.round((currentQuestionIndex / total) * 100);
+
+            progressText.textContent = `Question ${current} of ${total}`;
+            progressPercent.textContent = `${percentage}% Completed`;
+            progressBar.style.width = `${percentage}%`;
+        }
+
+        function renderQuestion() {
+            hintVisible = false;
+            const q = quizQuestions[currentQuestionIndex];
+            const answeredIndex = userAnswers[currentQuestionIndex];
+            const hasAnswered = answeredIndex !== null;
+
+            let optionsHTML = '';
+            q.options.forEach((opt, idx) => {
+                let btnStyle = 'bg-slate-900 border-slate-800 text-slate-200 hover:border-indigo-500 hover:bg-slate-800/80';
+                let badgeStyle = 'bg-slate-800 text-slate-300 border-slate-700 group-hover:bg-indigo-950 group-hover:text-indigo-300';
+                let iconSymbol = String.fromCharCode(65 + idx);
+
+                if (hasAnswered) {
+                    if (opt.correct) {
+                        btnStyle = 'bg-emerald-950/70 border-emerald-600 text-emerald-100 font-medium shadow-sm';
+                        badgeStyle = 'bg-emerald-600 text-white border-emerald-500';
+                        iconSymbol = '✓';
+                    } else if (idx === answeredIndex) {
+                        btnStyle = 'bg-rose-950/70 border-rose-600 text-rose-100 font-medium';
+                        badgeStyle = 'bg-rose-600 text-white border-rose-500';
+                        iconSymbol = '✕';
+                    } else {
+                        btnStyle = 'bg-slate-900/40 border-slate-800/60 text-slate-500 opacity-50';
+                        badgeStyle = 'bg-slate-900 text-slate-600 border-slate-800';
+                    }
+                }
+
+                optionsHTML += `
+                    <button 
+                        onclick="handleOptionSelect(${idx})" 
+                        ${hasAnswered ? 'disabled' : ''} 
+                        class="option-card w-full text-left p-3.5 sm:p-4 rounded-xl border-2 ${btnStyle} flex items-start group transition-all duration-150 text-sm sm:text-base">
+                        <span class="inline-flex items-center justify-center min-w-[1.75rem] h-7 text-xs font-bold rounded-lg border ${badgeStyle} mr-3 mt-0.5 shrink-0 transition-colors">
+                            ${iconSymbol}
+                        </span>
+                        <div class="flex-1">
+                            <div class="leading-snug">${opt.text}</div>
+                            ${hasAnswered ? `
+                                <div class="mt-2.5 text-xs leading-relaxed text-slate-300 border-t border-slate-800 pt-2 font-normal">
+                                    <strong class="${opt.correct ? 'text-emerald-400' : 'text-slate-200'}">Explanation:</strong> ${opt.rationale}
+                                </div>
+                            ` : ''}
+                        </div>
+                    </button>
+                `;
+            });
+
+            quizCardContainer.innerHTML = `
+                <div class="bg-slate-900 border border-slate-800 rounded-xl shadow-md p-5 sm:p-7">
+                    <!-- Top Info bar -->
+                    <div class="flex flex-wrap justify-between items-center gap-2 mb-4">
+                        <span class="text-xs font-bold uppercase tracking-wider px-3 py-1 bg-indigo-950 text-indigo-300 rounded-full border border-indigo-800/60">
+                            ${q.tag}
+                        </span>
+                        <span class="text-xs font-semibold text-slate-400">
+                            Q${q.qNum} of ${quizQuestions.length}
+                        </span>
+                    </div>
+
+                    <!-- Question Text -->
+                    <h2 class="text-base sm:text-lg font-bold text-white mb-5 leading-relaxed">
+                        ${q.question}
+                    </h2>
+
+                    <!-- Options list -->
+                    <div class="space-y-3 mb-5">
+                        ${optionsHTML}
+                    </div>
+
+                    <!-- Hint Drawer -->
+                    <div class="mb-6">
+                        <button onclick="toggleHint()" class="text-xs text-amber-400 hover:text-amber-300 font-semibold inline-flex items-center gap-1.5 focus:outline-none">
+                            <svg class="w-4 h-4 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                            <span id="hint-btn-text">Need a hint?</span>
+                        </button>
+                        <div id="hint-box" class="hidden mt-2 p-3 bg-amber-950/50 border border-amber-800/60 rounded-lg text-xs text-amber-200 leading-relaxed">
+                            <span class="font-bold text-amber-400">Hint:</span> ${q.hint}
+                        </div>
+                    </div>
+
+                    <!-- Navigation Footer -->
+                    <div class="flex justify-between items-center pt-4 border-t border-slate-800">
+                        <button 
+                            onclick="prevQuestion()" 
+                            ${currentQuestionIndex === 0 ? 'disabled' : ''} 
+                            class="px-4 py-2 text-xs sm:text-sm font-semibold text-slate-400 hover:text-indigo-400 disabled:opacity-30 disabled:hover:text-slate-400 transition-colors">
+                            ← Previous
+                        </button>
+
+                        <div class="flex gap-2">
+                            ${currentQuestionIndex === quizQuestions.length - 1 ? `
+                                <button 
+                                    onclick="showFinishScreen()" 
+                                    ${!hasAnswered ? 'disabled' : ''} 
+                                    class="px-5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-lg text-xs sm:text-sm shadow disabled:opacity-40 transition-colors">
+                                    Finish & View Results
+                                </button>
+                            ` : `
+                                <button 
+                                    onclick="nextQuestion()" 
+                                    ${!hasAnswered ? 'disabled' : ''} 
+                                    class="px-5 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-bold rounded-lg text-xs sm:text-sm shadow disabled:opacity-40 transition-colors">
+                                    Next →
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            if (window.MathJax && MathJax.typesetPromise) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function handleOptionSelect(index) {
+            if (userAnswers[currentQuestionIndex] !== null) return;
+
+            userAnswers[currentQuestionIndex] = index;
+            if (quizQuestions[currentQuestionIndex].options[index].correct) {
+                score++;
+            }
+
+            updateHeader();
+            renderQuestion();
+        }
+
+        function toggleHint() {
+            const hintBox = document.getElementById('hint-box');
+            const hintBtnText = document.getElementById('hint-btn-text');
+            if (hintBox.classList.contains('hidden')) {
+                hintBox.classList.remove('hidden');
+                hintBtnText.textContent = "Hide hint";
+            } else {
+                hintBox.classList.add('hidden');
+                hintBtnText.textContent = "Need a hint?";
+            }
+        }
+
+        function nextQuestion() {
+            if (currentQuestionIndex < quizQuestions.length - 1) {
+                currentQuestionIndex++;
+                updateHeader();
+                renderQuestion();
+            }
+        }
+
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                updateHeader();
+                renderQuestion();
+            }
+        }
+
+        function showFinishScreen() {
+            quizCardContainer.classList.add('hidden');
+            finishScreen.classList.remove('hidden');
+
+            const total = quizQuestions.length;
+            const percentage = Math.round((score / total) * 100);
+
+            finalPercentage.textContent = `${percentage}%`;
+            finalScoreText.textContent = `${score} out of ${total} Questions Correct`;
+
+            progressBar.style.width = `100%`;
+            progressPercent.textContent = `100% Completed`;
+        }
+
+        function reviewQuestions() {
+            finishScreen.classList.add('hidden');
+            quizCardContainer.classList.remove('hidden');
+            currentQuestionIndex = 0;
+            updateHeader();
+            renderQuestion();
+        }
+
+        resetQuizBtn.addEventListener('click', initQuiz);
+
+        window.addEventListener('DOMContentLoaded', initQuiz);
+    </script>
+</body>
+</html>
